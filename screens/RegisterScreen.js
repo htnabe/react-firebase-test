@@ -1,66 +1,72 @@
-import React, { useState } from 'react';
-import { StyleSheet } from 'react-native';
-import * as Yup from 'yup';
+import React, { useState } from "react";
+import { StyleSheet } from "react-native";
+import * as Yup from "yup";
 
-import Colors from '../utils/colors';
-import SafeView from '../components/SafeView';
-import Form from '../components/Forms/Form';
-import FormField from '../components/Forms/FormField';
-import FormButton from '../components/Forms/FormButton';
-import IconButton from '../components/IconButton';
-import FormErrorMessage from '../components/Forms/FormErrorMessage';
-import { registerWithEmail } from '../components/Firebase/firebase';
-import useStatusBar from '../hooks/useStatusBar';
+import Colors from "../utils/colors";
+import SafeView from "../components/SafeView";
+import Form from "../components/Forms/Form";
+import FormField from "../components/Forms/FormField";
+import FormButton from "../components/Forms/FormButton";
+import IconButton from "../components/IconButton";
+import FormErrorMessage from "../components/Forms/FormErrorMessage";
+import { registerWithEmail } from "../components/Firebase/firebase";
+import useStatusBar from "../hooks/useStatusBar";
+
+const actionCodeSettings = {
+  // URL you want to redirect back to. The domain (www.example.com) for this
+  // URL must be whitelisted in the Firebase Console.
+  url: "https://yell-app-ffaa7.firebaseapp.com/",
+  // This must be true.
+  handleCodeInApp: true,
+};
 
 const validationSchema = Yup.object().shape({
-  name: Yup.string()
-    .required()
-    .label('Name'),
+  name: Yup.string().required().label("Name"),
   email: Yup.string()
-    .required('Please enter a valid email')
+    .required("Please enter a valid email")
     .email()
-    .label('Email'),
+    .label("Email"),
   password: Yup.string()
     .required()
-    .min(6, 'Password must have at least 6 characters')
-    .label('Password'),
+    .min(6, "Password must have at least 6 characters")
+    .label("Password"),
   confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'Confirm Password must match Password')
-    .required('Confirm Password is required')
+    .oneOf([Yup.ref("password")], "Confirm Password must match Password")
+    .required("Confirm Password is required"),
 });
 
 export default function RegisterScreen({ navigation }) {
-  useStatusBar('light-content');
+  useStatusBar("light-content");
 
   const [passwordVisibility, setPasswordVisibility] = useState(true);
-  const [rightIcon, setRightIcon] = useState('eye');
-  const [confirmPasswordIcon, setConfirmPasswordIcon] = useState('eye');
+  const [rightIcon, setRightIcon] = useState("eye");
+  const [confirmPasswordIcon, setConfirmPasswordIcon] = useState("eye");
   const [confirmPasswordVisibility, setConfirmPasswordVisibility] = useState(
     true
   );
-  const [registerError, setRegisterError] = useState('');
+  const [registerError, setRegisterError] = useState("");
 
   function handlePasswordVisibility() {
-    if (rightIcon === 'eye') {
-      setRightIcon('eye-off');
+    if (rightIcon === "eye") {
+      setRightIcon("eye-off");
       setPasswordVisibility(!passwordVisibility);
-    } else if (rightIcon === 'eye-off') {
-      setRightIcon('eye');
+    } else if (rightIcon === "eye-off") {
+      setRightIcon("eye");
       setPasswordVisibility(!passwordVisibility);
     }
   }
 
   function handleConfirmPasswordVisibility() {
-    if (confirmPasswordIcon === 'eye') {
-      setConfirmPasswordIcon('eye-off');
+    if (confirmPasswordIcon === "eye") {
+      setConfirmPasswordIcon("eye-off");
       setConfirmPasswordVisibility(!confirmPasswordVisibility);
-    } else if (confirmPasswordIcon === 'eye-off') {
-      setConfirmPasswordIcon('eye');
+    } else if (confirmPasswordIcon === "eye-off") {
+      setConfirmPasswordIcon("eye");
       setConfirmPasswordVisibility(!confirmPasswordVisibility);
     }
   }
 
-  async function handleOnSignUp(values, actions) {
+  async function handleOnSignUp(values) {
     const { email, password } = values;
     try {
       await registerWithEmail(email, password);
@@ -73,13 +79,13 @@ export default function RegisterScreen({ navigation }) {
     <SafeView style={styles.container}>
       <Form
         initialValues={{
-          name: '',
-          email: '',
-          password: '',
-          confirmPassword: ''
+          name: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
         }}
         validationSchema={validationSchema}
-        onSubmit={values => handleOnSignUp(values)}
+        onSubmit={(values) => handleOnSignUp(values)}
       >
         <FormField
           name="name"
@@ -117,7 +123,7 @@ export default function RegisterScreen({ navigation }) {
           rightIcon={confirmPasswordIcon}
           handlePasswordVisibility={handleConfirmPasswordVisibility}
         />
-        <FormButton title={'Register'} />
+        <FormButton title={"Register"} />
         {<FormErrorMessage error={registerError} visible={true} />}
       </Form>
       <IconButton
@@ -134,11 +140,11 @@ export default function RegisterScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     padding: 15,
-    backgroundColor: Colors.mediumGrey
+    backgroundColor: Colors.mediumGrey,
   },
   backButton: {
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginVertical: 10
-  }
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 10,
+  },
 });
